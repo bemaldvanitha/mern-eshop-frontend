@@ -28,7 +28,7 @@ const PlaceOrderScreen = () => {
     const placeOrderHandler = async () => {
         try{
             const res = await createOrder({
-                orderItems: cart.orderItems,
+                orderItems: cart.cartItems,
                 shippingAddress: cart.shippingAddress,
                 paymentMethod: cart.paymentMethod,
                 itemsPrice: cart.itemsPrice,
@@ -137,7 +137,7 @@ const PlaceOrderScreen = () => {
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 {error && <Message variant={'Danger'}>
-                                    {error}
+                                    {error?.message}
                                 </Message>}
                             </ListGroup.Item>
                             <ListGroup.Item>
