@@ -3,16 +3,32 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { FaEdit, FaPlus, FaTrash } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
+import { toast } from "react-toastify";
 
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { useGetProductsQuery } from "../slicers/productsApiSlice";
+import { useGetProductsQuery, useCreateProductMutation
+    } from "../slicers/productsApiSlice";
+
 
 const ProductListScreen = () => {
-    const { data: products, isLoading, error } = useGetProductsQuery();
+    const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+
+    const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation();
 
     const deleteHandler = (id) => {
 
+    }
+
+    const createProductHandler = async () => {
+        if(window.confirm('Are you sure about adding new product')){
+            try{
+                await createProduct();
+                refetch();
+            }catch (error){
+                toast.error(error?.data?.message || error?.error);
+            }
+        }
     }
 
     return(
@@ -22,11 +38,13 @@ const ProductListScreen = () => {
                     <h1>Products</h1>
                 </Col>
                 <Col className={'text-end'}>
-                    <Button className={'btn-sm m-3'}>
+                    <Button className={'btn-sm m-3'} onClick={createProductHandler}>
                         <FaEdit/> Create Product
                     </Button>
                 </Col>
             </Row>
+
+            {loadingCreate && <Loader/>}
 
             {isLoading ? (
                 <Loader />
