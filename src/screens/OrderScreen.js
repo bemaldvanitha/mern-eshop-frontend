@@ -4,7 +4,8 @@ import { useParams, Link } from "react-router-dom";
 import { Col, Row, ListGroup, Image, Form, Button, Card } from "react-bootstrap";
 
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useGetPayPalClientIdQuery, usePayOrderMutation, useGetOrderDetailsQuery } from "../slicers/ordersApiSlice";
+import { useGetPayPalClientIdQuery, usePayOrderMutation,
+    useGetOrderDetailsQuery, useDeliverOrderMutation } from "../slicers/ordersApiSlice";
 import Message from "../components/Message";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
@@ -22,6 +23,8 @@ const OrderScreen = () => {
 
     const { data: paypal, isLoading: loadingPaypal, error: errorPaypal}
         = useGetPayPalClientIdQuery();
+
+    const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
 
     useEffect(() => {
         if (!errorPaypal && !loadingPaypal && paypal.clientId) {
@@ -82,8 +85,13 @@ const OrderScreen = () => {
     }
 
     const deliverHandler = async () => {
-        //await deliverOrder(orderId);
-        //refetch();
+        try{
+            await deliverOrder(orderId);
+            refetch();
+            toast.success('Order Delivered');
+        }catch (error){
+            toast.error(error?.data?.message || error?.message);
+        }
     };
 
     return isLoading ? <Loader/> : error ? <Message variant={'danger'}>
@@ -201,7 +209,7 @@ const OrderScreen = () => {
                                 </ListGroup.Item>
                             )}
 
-                            {/*loadingDeliver && <Loader />*/}
+                            {loadingDeliver && <Loader />}
 
                             {userInfo &&
                                 userInfo.isAdmin &&
