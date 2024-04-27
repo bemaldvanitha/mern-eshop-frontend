@@ -45,8 +45,16 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             providesTags: ['User'],
             keepUnusedDataFor: 5,
         }),
+        deleteUser: builder.mutation({
+            query: (userId) => ({
+                url: `${USERS_URL}/${userId}`,
+                method: 'DELETE',
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            }),
+        }),
     })
 });
 
 export const { useLoginMutation, useLogoutMutation, useRegisterMutation,
-    useProfileMutation, useGetUsersQuery } = usersApiSlice;
+    useProfileMutation, useGetUsersQuery, useDeleteUserMutation } = usersApiSlice;
