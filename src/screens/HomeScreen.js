@@ -6,6 +6,7 @@ import { useGetProductsQuery } from '../slicers/productsApiSlice';
 
 import Product from "../components/Product";
 import Loader from "../components/Loader";
+import Paginate from "../components/Paginate";
 import Message from "../components/Message";
 
 const HomeScreen = () => {
@@ -29,6 +30,7 @@ const HomeScreen = () => {
                         )
                     })}
                 </Row>
+                <Paginate pages={data.pages} page={data.page}/>
             </>)}
         </>
     )
